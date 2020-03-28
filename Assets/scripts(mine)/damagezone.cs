@@ -16,13 +16,4 @@ public class damagezone : MonoBehaviour
 
     }
         
-    void OnColisionEnter2D(Collision2D other)
-    {
-        rubycontroller player = other.gameObject.GetComponent<rubycontroller>();
-
-        if (player != null)
-        {
-            player.ChangeHealth(-1);
-            }
-    }
 }

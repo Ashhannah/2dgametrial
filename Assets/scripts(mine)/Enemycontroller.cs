@@ -10,19 +10,27 @@ public class NewBehaviourScript : MonoBehaviour
 
     Rigidbody2D rigidbody2D;
     float timer;
-    int direction = 1; 
+    int direction = 1;
+    bool broken = true;
 
-    // Start is called before the first frame update
-    void Start()
+    Animator animator;
+
+   void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
-        timer = changeTime; 
+        timer = changeTime;
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
 
     {
+        if(!broken)
+        {
+            return;
+        }
+        
         timer -= Time.deltaTime;
 
         if (timer < 0)
@@ -35,23 +43,34 @@ public class NewBehaviourScript : MonoBehaviour
 
         if (vertical)
         {
-            position.y = position.y + Time.deltaTime * speed;
+            position.y = position.y + Time.deltaTime * speed * direction;
+            animator.SetFloat("Move X", 0);
+            animator.SetFloat("Move Y", direction);
         }
         else
         {
-            position.x = position.x + Time.deltaTime * speed;
+            position.x = position.x + Time.deltaTime * speed * direction;
+            animator.SetFloat("Move X", direction);
+            animator.SetFloat("Move Y", 0);
         }
+       
         rigidbody2D.MovePosition(position);
         
     }
 
     void OnColisionEnter2D(Collision2D other)
     {
-        rubycontroller player = other.gameObject.GetComponent<rubycontroller>();
+        rubycontroller player = other.gameObject.GetComponent<Rubycontroller >();
 
         if (player != null)
         {
             player.ChangeHealth(-1);
         }
+    }
+    
+    public void Fix()
+    {
+        broken = false;
+        rigidbody2D.simulated = false;
     }
 }
